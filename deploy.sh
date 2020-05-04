@@ -65,4 +65,5 @@ kd --insecure-skip-tls-verify \
    --timeout 10m \
     -f ingress.yaml \
     -f deployment.yaml \
-    -f service.yaml
+    -f service.yaml \
+    -f autoscale.yaml
