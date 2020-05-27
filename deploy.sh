@@ -11,27 +11,40 @@ if [[ -z ${DOMAIN} ]] ; then
 fi
 export DOMAIN=${DOMAIN}
 
-if [[ ${ENVIRONMENT} == "prod" ]] ; then
-    echo "deploy ${VERSION} to PROD namespace, using HOCS_MANAGEMENT_UI_PROD drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_PROD}
+if [[ ${KUBE_NAMESPACE} == "cs-prod" ]] ; then
+    echo "deploy ${VERSION} to PROD namespace, using HOCS_MANAGEMENT_UI_CS_PROD drone secret"
+    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_CS_PROD}
     export REPLICAS="2"
+elif [[ ${KUBE_NAMESPACE} == "wcs-prod" ]] ; then
+    echo "deploy ${VERSION} to PROD namespace, using HOCS_MANAGEMENT_UI_WCS_PROD drone secret"
+    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_WCS_PROD}
+    export REPLICAS="2"
+elif [[ ${KUBE_NAMESPACE} == "cs-qa" ]] ; then
+    echo "deploy ${VERSION} to QA namespace, using HOCS_MANAGEMENT_UI_CS_QA drone secret"
+    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_CS_QA}
+    export REPLICAS="2"
+elif [[ ${KUBE_NAMESPACE} == "wcs-qa" ]] ; then
+    echo "deploy ${VERSION} to QA namespace, using HOCS_MANAGEMENT_UI_WCS_QA drone secret"
+    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_WCS_QA}
+    export REPLICAS="2"
+elif [[ ${KUBE_NAMESPACE} == "cs-demo" ]] ; then
+    echo "deploy ${VERSION} to DEMO namespace, HOCS_MANAGEMENT_UI_CS_DEMO drone secret"
+    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_CS_DEMO}
+    export REPLICAS="1"
+elif [[ ${KUBE_NAMESPACE} == "wcs-demo" ]] ; then
+    echo "deploy ${VERSION} to DEMO namespace, HOCS_MANAGEMENT_UI_WCS_DEMO drone secret"
+    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_WCS_DEMO}
+    export REPLICAS="1"
+elif [[ ${KUBE_NAMESPACE} == "cs-dev" ]] ; then
+    echo "deploy ${VERSION} to DEV namespace, HOCS_MANAGEMENT_UI_CS_DEV drone secret"
+    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_CS_DEV}
+    export REPLICAS="1"
+elif [[ ${KUBE_NAMESPACE} == "wcs-dev" ]] ; then
+    echo "deploy ${VERSION} to DEV namespace, HOCS_MANAGEMENT_UI_WCS_DEV drone secret"
+    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_WCS_DEV}
+    export REPLICAS="1"
 else
-    if [[ ${ENVIRONMENT} == "qa" ]] ; then
-        echo "deploy ${VERSION} to QA namespace, using HOCS_MANAGEMENT_UI_QA drone secret"
-        export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_QA}
-        export REPLICAS="2"
-    elif [[ ${ENVIRONMENT} == "demo" ]] ; then
-        echo "deploy ${VERSION} to DEMO namespace, HOCS_MANAGEMENT_UI_DEMO drone secret"
-        export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_DEMO}
-        export REPLICAS="1"
-    elif [[ ${ENVIRONMENT} == "dev" ]] ; then
-        echo "deploy ${VERSION} to DEV namespace, HOCS_MANAGEMENT_UI_DEV drone secret"
-        export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_DEV}
-        export REPLICAS="1"
-    else
-        echo "Unable to find environment: ${ENVIRONMENT}"
-    fi
-
+    echo "Unable to find environment: ${ENVIRONMENT}"
 fi
 
 if [[ -z ${KUBE_TOKEN} ]] ; then
