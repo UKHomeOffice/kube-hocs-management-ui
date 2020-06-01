@@ -55,7 +55,7 @@ fi
 if [[ "${KUBE_NAMESPACE}" == "wcs-prod" ]] ; then
     export DNS_PREFIX=www.${DOMAIN}-management
     export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/HOCS
-elif [[ "${ENVIRONMENT}" == "cs-prod" ]] ; then
+elif [[ "${KUBE_NAMESPACE}" == "cs-prod" ]] ; then
     export DNS_PREFIX=www.${DOMAIN}-management
     export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/hocs-prod
 else
