@@ -53,13 +53,31 @@ if [[ -z ${KUBE_TOKEN} ]] ; then
 fi
 
 if [[ "${KUBE_NAMESPACE}" == "wcs-prod" ]] ; then
-    export DNS_PREFIX=www.${DOMAIN}-management
+    export DNS_PREFIX=www.wcs-management
     export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/HOCS
 elif [[ "${KUBE_NAMESPACE}" == "cs-prod" ]] ; then
-    export DNS_PREFIX=www.${DOMAIN}-management
+    export DNS_PREFIX=www.cs-management
     export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/hocs-prod
+elif [[ "${KUBE_NAMESPACE}" == "cs-dev" ]] ; then
+    export DNS_PREFIX=dev-management.cs-notprod
+    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
+elif [[ "${KUBE_NAMESPACE}" == "wcs-dev" ]] ; then
+    export DNS_PREFIX=dev-management.wcs-notprod
+    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
+elif [[ "${KUBE_NAMESPACE}" == "cs-qa" ]] ; then
+    export DNS_PREFIX=qa-management.cs-notprod
+    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
+elif [[ "${KUBE_NAMESPACE}" == "wcs-qa" ]] ; then
+    export DNS_PREFIX=qa-management.wcs-notprod
+    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
+elif [[ "${KUBE_NAMESPACE}" == "cs-demo" ]] ; then
+    export DNS_PREFIX=demo-management.cs-notprod
+    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
+elif [[ "${KUBE_NAMESPACE}" == "wcs-demo" ]] ; then
+    export DNS_PREFIX=demo-management.wcs-notprod
+    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 else
-    export DNS_PREFIX=${DOMAIN}-management.${DOMAIN}-notprod
+    export DNS_PREFIX=${DOMAIN}.${DOMAIN}-notprod
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 fi
 
