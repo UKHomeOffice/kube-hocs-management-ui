@@ -59,13 +59,13 @@ elif [[ "${KUBE_NAMESPACE}" == "cs-prod" ]] ; then
     export DNS_PREFIX=www.cs-management
     export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/hocs-prod
 elif [[ "${KUBE_NAMESPACE}" == "cs-dev" ]] ; then
-    export DNS_PREFIX=dev-management.cs-notprod
+    export DNS_PREFIX=dev-management.internal.cs-notprod
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "wcs-dev" ]] ; then
     export DNS_PREFIX=dev-management.wcs-notprod
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "cs-qa" ]] ; then
-    export DNS_PREFIX=qa-management.cs-notprod
+    export DNS_PREFIX=qa-management.internal.cs-notprod
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "wcs-qa" ]] ; then
     export DNS_PREFIX=qa-management.wcs-notprod
@@ -83,18 +83,24 @@ fi
 
 export DOMAIN_NAME=${DNS_PREFIX}.homeoffice.gov.uk
 
+if [[ $DNS_PREFIX == *"internal"* ]]; then
+  export INGRESS_TYPE="internal"
+else
+  export INGRESS_TYPE="external"
+fi
+
 echo
 echo "Deploying hocs-management-ui to ${ENVIRONMENT}"
 echo "Keycloak realm: ${KC_REALM}"
 echo "Keycloak domain: ${KC_DOMAIN}"
-echo "domain name: ${DOMAIN_NAME}"
+echo "${INGRESS_TYPE} name: ${DOMAIN_NAME}"
 echo
 
 cd kd
 
 kd --insecure-skip-tls-verify \
    --timeout 10m \
-    -f ingress.yaml \
+    -f ingress-${INGRESS_TYPE}.yaml \
     -f deployment.yaml \
     -f service.yaml \
     -f autoscale.yaml
