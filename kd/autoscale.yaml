@@ -5,10 +5,10 @@ metadata:
     app: hocs-management-ui
   name: hocs-management-ui
 spec:
-  maxReplicas: 10
-  minReplicas: 1
+  maxReplicas: 2
+  minReplicas: {{.REPLICAS}}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: hocs-management-ui
-  targetCPUUtilizationPercentage: 10
+  targetCPUUtilizationPercentage: 24
