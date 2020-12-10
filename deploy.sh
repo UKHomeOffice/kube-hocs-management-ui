@@ -63,13 +63,13 @@ elif [[ "${KUBE_NAMESPACE}" == "cs-dev" ]] ; then
     export DNS_PREFIX=dev-management.internal.cs-notprod
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "wcs-dev" ]] ; then
-    export DNS_PREFIX=dev-management.wcs-notprod
+    export DNS_PREFIX=dev-management.internal.wcs-notprod
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "cs-qa" ]] ; then
     export DNS_PREFIX=qa-management.internal.cs-notprod
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "wcs-qa" ]] ; then
-    export DNS_PREFIX=qa-management.wcs-notprod
+    export DNS_PREFIX=qa-management.internal.wcs-notprod
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "cs-demo" ]] ; then
     export DNS_PREFIX=demo-management.cs-notprod
