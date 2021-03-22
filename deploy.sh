@@ -1,59 +1,25 @@
 #!/bin/bash
+set -euo pipefail
 
 export KUBE_NAMESPACE=${ENVIRONMENT}
-export KUBE_SERVER=${KUBE_SERVER}
+export KUBE_TOKEN=${KUBE_TOKEN}
+export VERSION=${VERSION}
 
-if [[ -z ${VERSION} ]] ; then
-    export VERSION=${IMAGE_VERSION}
+export DOMAIN="cs"
+if [ ${KUBE_NAMESPACE%-*} == "wcs" ]; then
+    export DOMAIN="wcs"
 fi
-if [[ -z ${DOMAIN} ]] ; then
-    export DOMAIN="cs"
-fi
-export DOMAIN=${DOMAIN}
 
 if [[ ${KUBE_NAMESPACE} == *prod ]]
 then
     export MIN_REPLICAS="2"
     export MAX_REPLICAS="6"
+    export KUBE_SERVER=https://kube-api-prod.prod.acp.homeoffice.gov.uk
 else
     export MIN_REPLICAS="1"
     export MAX_REPLICAS="2"
-fi
-
-if [[ ${KUBE_NAMESPACE} == "cs-prod" ]] ; then
-    echo "deploy ${VERSION} to PROD namespace, using HOCS_MANAGEMENT_UI_CS_PROD drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_CS_PROD}
-elif [[ ${KUBE_NAMESPACE} == "wcs-prod" ]] ; then
-    echo "deploy ${VERSION} to PROD namespace, using HOCS_MANAGEMENT_UI_WCS_PROD drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_WCS_PROD}
-elif [[ ${KUBE_NAMESPACE} == "cs-qa" ]] ; then
-    echo "deploy ${VERSION} to QA namespace, using HOCS_MANAGEMENT_UI_CS_QA drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_CS_QA}
-elif [[ ${KUBE_NAMESPACE} == "wcs-qa" ]] ; then
-    echo "deploy ${VERSION} to QA namespace, using HOCS_MANAGEMENT_UI_WCS_QA drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_WCS_QA}
-elif [[ ${KUBE_NAMESPACE} == "cs-demo" ]] ; then
-    echo "deploy ${VERSION} to DEMO namespace, HOCS_MANAGEMENT_UI_CS_DEMO drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_CS_DEMO}
-elif [[ ${KUBE_NAMESPACE} == "wcs-demo" ]] ; then
-    echo "deploy ${VERSION} to DEMO namespace, HOCS_MANAGEMENT_UI_WCS_DEMO drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_WCS_DEMO}
-elif [[ ${KUBE_NAMESPACE} == "cs-dev" ]] ; then
-    echo "deploy ${VERSION} to DEV namespace, HOCS_MANAGEMENT_UI_CS_DEV drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_CS_DEV}
-elif [[ ${KUBE_NAMESPACE} == "wcs-dev" ]] ; then
-    echo "deploy ${VERSION} to DEV namespace, HOCS_MANAGEMENT_UI_WCS_DEV drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_WCS_DEV}
-elif [[ ${KUBE_NAMESPACE} == "hocs-qax" ]] ; then
-    echo "deploy ${VERSION} to qax namespace, HOCS_MANAGEMENT_UI_QAX drone secret"
-    export KUBE_TOKEN=${HOCS_MANAGEMENT_UI_QAX}
-else
-    echo "Unable to find environment: ${ENVIRONMENT}"
-fi
-
-if [[ -z ${KUBE_TOKEN} ]] ; then
-    echo "Failed to find a value for KUBE_TOKEN - exiting"
-    exit -1
+    export KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 fi
 
 if [[ "${KUBE_NAMESPACE}" == "wcs-prod" ]] ; then
@@ -64,42 +30,32 @@ elif [[ "${KUBE_NAMESPACE}" == "cs-prod" ]] ; then
     export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/hocs-prod
 elif [[ "${KUBE_NAMESPACE}" == "cs-dev" ]] ; then
     export DNS_PREFIX=dev-management.internal.cs-notprod
-    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "wcs-dev" ]] ; then
     export DNS_PREFIX=dev-management.internal.wcs-notprod
-    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "cs-qa" ]] ; then
     export DNS_PREFIX=qa-management.internal.cs-notprod
-    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "wcs-qa" ]] ; then
     export DNS_PREFIX=qa-management.internal.wcs-notprod
-    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "cs-demo" ]] ; then
     export DNS_PREFIX=demo-management.cs-notprod
-    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "wcs-demo" ]] ; then
     export DNS_PREFIX=demo-management.wcs-notprod
-    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "hocs-qax" ]] ; then
     export DNS_PREFIX=qax-management.internal.cs-notprod
-    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
 else
-    export DNS_PREFIX=${DOMAIN}-management.${DOMAIN}-notprod
-    export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
+    export DNS_PREFIX=${DOMAIN}-management.internal.${DOMAIN}-notprod
 fi
 
 export DOMAIN_NAME=${DNS_PREFIX}.homeoffice.gov.uk
 
+export INGRESS_TYPE="external"
 if [[ $DNS_PREFIX == *"internal"* ]]; then
   export INGRESS_TYPE="internal"
-else
-  export INGRESS_TYPE="external"
 fi
 
 echo
 echo "Deploying hocs-management-ui to ${ENVIRONMENT}"
 echo "Keycloak realm: ${KC_REALM}"
-echo "Keycloak domain: ${KC_DOMAIN}"
 echo "${INGRESS_TYPE} name: ${DOMAIN_NAME}"
 echo
 
