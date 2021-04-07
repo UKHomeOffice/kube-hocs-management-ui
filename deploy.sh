@@ -42,6 +42,10 @@ elif [[ "${KUBE_NAMESPACE}" == "wcs-demo" ]] ; then
     export DNS_PREFIX=demo-management.wcs-notprod
 elif [[ "${KUBE_NAMESPACE}" == "hocs-qax" ]] ; then
     export DNS_PREFIX=qax-management.internal.cs-notprod
+elif [[ "${KUBE_NAMESPACE}" == "hocs-delta" ]] ; then
+    export DNS_PREFIX=hocs-delta-management.internal.cs-notprod
+elif [[ "${KUBE_NAMESPACE}" == "hocs-gamma" ]] ; then
+    export DNS_PREFIX=hocs-gamma-management.internal.cs-notprod
 else
     export DNS_PREFIX=${DOMAIN}-management.internal.${DOMAIN}-notprod
 fi
