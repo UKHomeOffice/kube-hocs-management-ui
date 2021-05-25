@@ -20,10 +20,10 @@ then
     export UPTIME_PERIOD="Mon-Sun 05:00-23:00 Europe/London"
     export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-prod.crt"
     if [[ "${DOMAIN}" == "wcs" ]] ; then
-        export DNS_PREFIX=www.wcs-management
+        export DOMAIN_NAME=www.wcs-management.homeoffice.gov.uk
         export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/HOCS
-    else
-        export DNS_PREFIX=www.cs-management
+      else
+        export DOMAIN_NAME=www.cs-management.homeoffice.gov.uk
         export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/hocs-prod
     fi
 else
@@ -34,10 +34,8 @@ else
     export UPTIME_PERIOD="Mon-Fri 08:00-18:00 Europe/London"
     export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-notprod.crt"
 
-    export DNS_PREFIX="$SUBNAMESPACE-management.internal.$DOMAIN-notprod"
+    export DOMAIN_NAME="$SUBNAMESPACE-management.internal.$DOMAIN-notprod.homeoffice.gov.uk"
 fi
-
-export DOMAIN_NAME=${DNS_PREFIX}.homeoffice.gov.uk
 
 export INGRESS_TYPE="external"
 if [[ $DNS_PREFIX == *"internal"* ]]; then
