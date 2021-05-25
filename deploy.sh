@@ -10,7 +10,9 @@ if [ "${KUBE_NAMESPACE%-*}" == "wcs" ]; then
     export DOMAIN="wcs"
 fi
 
-if [[ ${KUBE_NAMESPACE} == *prod ]]
+export SUBNAMESPACE="${KUBE_NAMESPACE#*-}" # e.g. dev, qa
+
+if [[ ${SUBNAMESPACE} == "prod" ]]
 then
     export MIN_REPLICAS="2"
     export MAX_REPLICAS="6"
@@ -32,28 +34,8 @@ if [[ "${KUBE_NAMESPACE}" == "wcs-prod" ]] ; then
 elif [[ "${KUBE_NAMESPACE}" == "cs-prod" ]] ; then
     export DNS_PREFIX=www.cs-management
     export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/hocs-prod
-elif [[ "${KUBE_NAMESPACE}" == "cs-dev" ]] ; then
-    export DNS_PREFIX=dev-management.internal.cs-notprod
-elif [[ "${KUBE_NAMESPACE}" == "wcs-dev" ]] ; then
-    export DNS_PREFIX=dev-management.internal.wcs-notprod
-elif [[ "${KUBE_NAMESPACE}" == "cs-qa" ]] ; then
-    export DNS_PREFIX=qa-management.internal.cs-notprod
-elif [[ "${KUBE_NAMESPACE}" == "wcs-qa" ]] ; then
-    export DNS_PREFIX=qa-management.internal.wcs-notprod
-elif [[ "${KUBE_NAMESPACE}" == "cs-demo" ]] ; then
-    export DNS_PREFIX=demo-management.cs-notprod
-elif [[ "${KUBE_NAMESPACE}" == "wcs-demo" ]] ; then
-    export DNS_PREFIX=demo-management.wcs-notprod
-elif [[ "${KUBE_NAMESPACE}" == "hocs-qax" ]] ; then
-    export DNS_PREFIX=qax-management.internal.cs-notprod
-elif [[ "${KUBE_NAMESPACE}" == "hocs-delta" ]] ; then
-    export DNS_PREFIX=hocs-delta-management.internal.cs-notprod
-elif [[ "${KUBE_NAMESPACE}" == "hocs-gamma" ]] ; then
-    export DNS_PREFIX=hocs-gamma-management.internal.cs-notprod
-elif [[ "${KUBE_NAMESPACE}" == "hocs-epsilon" ]] ; then
-    export DNS_PREFIX=hocs-epsilon-management.internal.cs-notprod
 else
-    export DNS_PREFIX=${DOMAIN}-management.internal.${DOMAIN}-notprod
+    export DNS_PREFIX="$SUBNAMESPACE-management.internal.$DOMAIN-notprod"
 fi
 
 export DOMAIN_NAME=${DNS_PREFIX}.homeoffice.gov.uk
