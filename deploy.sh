@@ -6,7 +6,7 @@ export KUBE_TOKEN=${KUBE_TOKEN}
 export VERSION=${VERSION}
 
 export DOMAIN="cs"
-if [ ${KUBE_NAMESPACE%-*} == "wcs" ]; then
+if [ "${KUBE_NAMESPACE%-*}" == "wcs" ]; then
     export DOMAIN="wcs"
 fi
 
@@ -67,7 +67,7 @@ echo "Keycloak realm: ${KC_REALM}"
 echo "${INGRESS_TYPE} name: ${DOMAIN_NAME}"
 echo
 
-cd kd
+cd kd || exit 1
 
 kd --insecure-skip-tls-verify \
    --timeout 10m \
