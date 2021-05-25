@@ -41,7 +41,7 @@ else
 fi
 
 echo
-echo "Deploying hocs-management-ui to ${ENVIRONMENT}"
+echo "Deploying hocs-management-ui ${VERSION} to ${ENVIRONMENT}"
 echo "Keycloak realm: ${KC_REALM}"
 echo "External domain: ${EXTERNAL_DOMAIN:-nil}"
 echo "Internal domain: ${INTERNAL_DOMAIN:-nil}"
