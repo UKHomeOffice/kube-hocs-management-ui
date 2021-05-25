@@ -20,10 +20,12 @@ then
     export UPTIME_PERIOD="Mon-Sun 05:00-23:00 Europe/London"
     export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-prod.crt"
     if [[ "${DOMAIN}" == "wcs" ]] ; then
-        export DOMAIN_NAME=www.wcs-management.homeoffice.gov.uk
+        export EXTERNAL_DOMAIN=www.wcs-management.homeoffice.gov.uk
+        export INTERNAL_DOMAIN=''
         export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/HOCS
       else
-        export DOMAIN_NAME=www.cs-management.homeoffice.gov.uk
+        export EXTERNAL_DOMAIN=www.cs-management.homeoffice.gov.uk
+        export INTERNAL_DOMAIN=''
         export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/hocs-prod
     fi
 else
@@ -34,24 +36,22 @@ else
     export UPTIME_PERIOD="Mon-Fri 08:00-18:00 Europe/London"
     export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-notprod.crt"
 
-    export DOMAIN_NAME="$SUBNAMESPACE-management.internal.$DOMAIN-notprod.homeoffice.gov.uk"
-fi
-
-export INGRESS_TYPE="external"
-if [[ $DNS_PREFIX == *"internal"* ]]; then
-  export INGRESS_TYPE="internal"
+    export INTERNAL_DOMAIN="$SUBNAMESPACE-management.internal.$DOMAIN-notprod.homeoffice.gov.uk"
+    export EXTERNAL_DOMAIN="$SUBNAMESPACE-management.$DOMAIN-notprod.homeoffice.gov.uk"
 fi
 
 echo
 echo "Deploying hocs-management-ui to ${ENVIRONMENT}"
 echo "Keycloak realm: ${KC_REALM}"
-echo "${INGRESS_TYPE} name: ${DOMAIN_NAME}"
+echo "External domain: ${EXTERNAL_DOMAIN:-nil}"
+echo "Internal domain: ${INTERNAL_DOMAIN:-nil}"
 echo
 
 cd kd || exit 1
 
 kd --timeout 10m \
-    -f ingress-${INGRESS_TYPE}.yaml \
+    -f ingress-external.yaml \
+    ${INTERNAL_DOMAIN:+ -f ingress-internal.yaml} \
     -f deployment.yaml \
     -f service.yaml \
     -f autoscale.yaml

@@ -131,7 +131,6 @@ spec:
           - --server-read-timeout=60s
           - --server-write-timeout=60s
           - --no-redirects=false
-          - --redirection-url=https://{{.DOMAIN_NAME}}
           - --resources=uri=/health|white-listed=true
           - --resources=uri=/public/*|white-listed=true
           - --resources=uri=/*
@@ -141,7 +140,6 @@ spec:
           - --enable-logout-redirect=true
           - --enable-refresh-tokens=true
           - --encryption-key=$(ENCRYPTION_KEY)
-          - --cookie-domain={{.DOMAIN_NAME}}
         ports:
           - name: keycloak-http
             containerPort: 8081
@@ -182,7 +180,6 @@ spec:
           - --server-read-timeout=60s
           - --server-write-timeout=60s
           - --no-redirects=true
-          - --redirection-url=https://{{.DOMAIN_NAME}}
           - --resources=uri=/health|white-listed=true
           - --resources=uri=/public/*|white-listed=true
           - --resources=uri=/*
@@ -190,7 +187,11 @@ spec:
           - --http-only-cookie=true
           - --enable-refresh-tokens=true
           - --encryption-key=$(ENCRYPTION_KEY)
-          - --cookie-domain={{.DOMAIN_NAME}}
+            {{ if not .INTERNAL_DOMAIN }}
+          # if no internal domain, hardcode the external domain:
+          - --redirection-url=https://{{.EXTERNAL_DOMAIN}}
+          - --cookie-domain=https://{{.EXTERNAL_DOMAIN}}
+            {{ end }}
         ports:
           - name: keycloak-http
             containerPort: 8082

@@ -16,7 +16,7 @@ metadata:
   name: hocs-management-ui
 spec:
   rules:
-  - host: {{.DOMAIN_NAME}}
+  - host: {{.EXTERNAL_DOMAIN}}
     http:
       paths:
       - backend:
@@ -26,5 +26,5 @@ spec:
 
   tls:
   - hosts:
-    - {{.DOMAIN_NAME}}
+    - {{.EXTERNAL_DOMAIN}}
     secretName: hocs-management-ui-external-tls

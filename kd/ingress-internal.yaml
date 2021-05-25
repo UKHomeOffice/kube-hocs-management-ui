@@ -17,7 +17,7 @@ metadata:
   name: hocs-management-ui-internal
 spec:
   rules:
-  - host: {{.DOMAIN_NAME}}
+  - host: {{.INTERNAL_DOMAIN}}
     http:
       paths:
       - backend:
@@ -27,5 +27,5 @@ spec:
 
   tls:
   - hosts:
-    - {{.DOMAIN_NAME}}
+    - {{.INTERNAL_DOMAIN}}
     secretName: hocs-management-ui-internal-tls
