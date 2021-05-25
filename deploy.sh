@@ -15,11 +15,13 @@ then
     export MIN_REPLICAS="2"
     export MAX_REPLICAS="6"
     export KUBE_SERVER=https://kube-api-prod.prod.acp.homeoffice.gov.uk
+    export UPTIME_PERIOD="Mon-Sun 05:00-23:00 Europe/London"
 else
     export MIN_REPLICAS="1"
     export MAX_REPLICAS="2"
     export KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
+    export UPTIME_PERIOD="Mon-Fri 08:00-18:00 Europe/London"
 fi
 
 if [[ "${KUBE_NAMESPACE}" == "wcs-prod" ]] ; then
