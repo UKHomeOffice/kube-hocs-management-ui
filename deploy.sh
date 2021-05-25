@@ -19,6 +19,13 @@ then
     export KUBE_SERVER=https://kube-api-prod.prod.acp.homeoffice.gov.uk
     export UPTIME_PERIOD="Mon-Sun 05:00-23:00 Europe/London"
     export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-prod.crt"
+    if [[ "${DOMAIN}" == "wcs" ]] ; then
+        export DNS_PREFIX=www.wcs-management
+        export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/HOCS
+    else
+        export DNS_PREFIX=www.cs-management
+        export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/hocs-prod
+    fi
 else
     export MIN_REPLICAS="1"
     export MAX_REPLICAS="2"
@@ -26,15 +33,7 @@ else
     export KC_REALM=https://sso-dev.notprod.homeoffice.gov.uk/auth/realms/hocs-notprod
     export UPTIME_PERIOD="Mon-Fri 08:00-18:00 Europe/London"
     export KUBE_CERTIFICATE_AUTHORITY="https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-notprod.crt"
-fi
 
-if [[ "${KUBE_NAMESPACE}" == "wcs-prod" ]] ; then
-    export DNS_PREFIX=www.wcs-management
-    export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/HOCS
-elif [[ "${KUBE_NAMESPACE}" == "cs-prod" ]] ; then
-    export DNS_PREFIX=www.cs-management
-    export KC_REALM=https://sso.digital.homeoffice.gov.uk/auth/realms/hocs-prod
-else
     export DNS_PREFIX="$SUBNAMESPACE-management.internal.$DOMAIN-notprod"
 fi
 
