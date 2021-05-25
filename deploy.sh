@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-export KUBE_NAMESPACE=${ENVIRONMENT}
+export KUBE_NAMESPACE=${ENVIRONMENT:-$DRONE_DEPLOY_TO}
 export KUBE_TOKEN=${KUBE_TOKEN}
 export VERSION=${VERSION}
 
